@@ -1,5 +1,7 @@
 package org.example.cineapi.service;
 
+import org.example.cineapi.dto.FilmeRequestDTO;
+import org.example.cineapi.dto.FilmeResponseDTO;
 import org.example.cineapi.model.Filme;
 import org.example.cineapi.repository.FilmeRepository;
 import org.springframework.stereotype.Service;
@@ -14,17 +16,59 @@ public class FilmeService {
         this.repository = repository;
     }
 
-    public Filme salvar(Filme filme){
-        return repository.save(filme);
+    public FilmeResponseDTO salvar(FilmeRequestDTO dto){
+        Filme filme = toEntity(dto);
+        Filme salvo = repository.save(filme);
+        return toResponseDTO(salvo);
     }
 
-    public Filme buscarId(Long idFilme){
-        return repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+    public FilmeResponseDTO buscarId(Long idFilme){
+        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        return toResponseDTO(filme);
     }
 
-    public List<Filme> listar(){
-        return repository.findAll();
+    public List<FilmeResponseDTO> listar(){
+        return repository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
-    //atualiza, buscar por titulo, deletar
+    public void deletar(Long idFilme){
+        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        repository.delete(filme);
+    }
+
+    public FilmeResponseDTO atualizar(Long idFilme, FilmeRequestDTO dto){
+        Filme existente = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+
+        existente.setTitulo(dto.titulo());
+        existente.setGenero(dto.genero());
+        existente.setDiretor(dto.diretor());
+        existente.setAno(dto.ano());
+        existente.setDuracao(dto.duracao());
+        existente.setNota(dto.nota());
+
+        Filme atualizado = repository.save(existente);
+        return toResponseDTO(atualizado);
+    }
+
+    private Filme toEntity(FilmeRequestDTO dto){
+        Filme filme = new Filme();
+        filme.setTitulo(dto.titulo());
+        filme.setGenero(dto.genero());
+        filme.setDiretor(dto.diretor());
+        filme.setAno(dto.ano());
+        filme.setDuracao(dto.duracao());
+        filme.setNota(dto.nota());
+        return filme;
+    }
+
+    private FilmeResponseDTO toResponseDTO(Filme filme){
+        return new FilmeResponseDTO(
+                filme.getIdFilme(),
+                filme.getTitulo(),
+                filme.getDiretor(),
+                filme.getNota());
+    }
 }
