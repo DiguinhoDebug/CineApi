@@ -2,8 +2,7 @@ package org.example.cineapi.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -15,10 +14,14 @@ public class Filme {
     private Long idFilme;
     private String titulo;
     private String genero;
-    private String diretor;
+
     private Integer ano;
     private Integer duracao;
     private Integer nota;
+
+    @ManyToOne
+    @JoinColumn(name = "idDiretor")
+    private Diretor diretor;
 
     public Filme(){}
 }
