@@ -20,7 +20,7 @@ public class Diretor {
     private Integer idade;
     private String biografia;
 
-    @OneToMany(mappedBy = "Diretor")
+    @OneToMany(mappedBy = "diretor")
     private List<Filme> filmes = new ArrayList<>();
 
     public Diretor(){}

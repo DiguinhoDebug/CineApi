@@ -77,4 +77,12 @@ public class FilmeService {
                 filme.getDiretor().getNome(),
                 filme.getNota());
     }
+
+    public List<FilmeResponseDTO> listarFilmesPorDiretor(Long idDiretor){
+        diretorService.buscarEntidade(idDiretor);
+        return repository.findByDiretorIdDiretor(idDiretor)
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
 }
