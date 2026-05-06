@@ -42,4 +42,14 @@ public class DiretorController {
     public List<FilmeResponseDTO> listarFilmesPorDiretor(@PathVariable Long idDiretor){
         return filmeService.listarFilmesPorDiretor(idDiretor);
     }
+
+    @PutMapping("/{idDiretor}")
+    public DiretorResponseDTO atualizar (@PathVariable Long idDiretor, @RequestBody @Valid DiretorRequestDTO dto){
+        return service.atualizar(idDiretor, dto);
+    }
+
+    @DeleteMapping("/{idDiretor}")
+    public void deletar(@PathVariable Long idDiretor){
+        service.deletar(idDiretor);
+    }
 }

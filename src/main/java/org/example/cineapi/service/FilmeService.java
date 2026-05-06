@@ -2,6 +2,7 @@ package org.example.cineapi.service;
 
 import org.example.cineapi.dto.FilmeRequestDTO;
 import org.example.cineapi.dto.FilmeResponseDTO;
+import org.example.cineapi.exception.RecursoNaoEncontradoException;
 import org.example.cineapi.model.Diretor;
 import org.example.cineapi.model.Filme;
 import org.example.cineapi.repository.DiretorRepository;
@@ -27,7 +28,7 @@ public class FilmeService {
     }
 
     public FilmeResponseDTO buscarId(Long idFilme){
-        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RecursoNaoEncontradoException("Filme não encontrado"));
         return toResponseDTO(filme);
     }
 
@@ -39,12 +40,12 @@ public class FilmeService {
     }
 
     public void deletar(Long idFilme){
-        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        Filme filme = repository.findById(idFilme).orElseThrow(() -> new RecursoNaoEncontradoException("Filme não encontrado"));
         repository.delete(filme);
     }
 
     public FilmeResponseDTO atualizar(Long idFilme, FilmeRequestDTO dto){
-        Filme existente = repository.findById(idFilme).orElseThrow(() -> new RuntimeException("Filme não encontrado"));
+        Filme existente = repository.findById(idFilme).orElseThrow(() -> new RecursoNaoEncontradoException("Filme não encontrado"));
         Diretor diretor = diretorService.buscarEntidade(dto.idDiretor());
         existente.setTitulo(dto.titulo());
         existente.setGenero(dto.genero());
