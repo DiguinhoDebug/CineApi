@@ -1,9 +1,11 @@
 package org.example.cineapi.controller;
 
 import jakarta.validation.Valid;
+import org.example.cineapi.dto.AvaliacaoResponseDTO;
 import org.example.cineapi.dto.FilmeRequestDTO;
 import org.example.cineapi.dto.FilmeResponseDTO;
 import org.example.cineapi.model.Filme;
+import org.example.cineapi.service.AvaliacaoService;
 import org.example.cineapi.service.FilmeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class FilmeController {
 
     private final FilmeService service;
+    private final AvaliacaoService avaliacaoService;
 
-    public FilmeController (FilmeService service){
+    public FilmeController (FilmeService service, AvaliacaoService avaliacaoService){
         this.service = service;
+        this.avaliacaoService = avaliacaoService;
     }
 
     @GetMapping
@@ -42,5 +46,10 @@ public class FilmeController {
     @PutMapping("/{idFilme}")
     public FilmeResponseDTO atualizar(@PathVariable Long idFilme, @RequestBody @Valid FilmeRequestDTO dto){
         return service.atualizar(idFilme, dto);
+    }
+
+    @GetMapping("/{idFilme}/avaliacoes")
+    public List<AvaliacaoResponseDTO> listarAvaliacoesPorFilme(@PathVariable Long idFilme){
+        return avaliacaoService.listarPorFilme(idFilme);
     }
 }

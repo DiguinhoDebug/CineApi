@@ -20,11 +20,14 @@ public class Filme {
 
     private Integer ano;
     private Integer duracao;
-    private Integer nota;
+
 
     @ManyToOne
     @JoinColumn(name = "idDiretor")
     private Diretor diretor;
+
+    @OneToMany(mappedBy = "filme")
+    private List<Avaliacao> avaliacoes = new ArrayList<>();
 
     public Filme(){}
 }

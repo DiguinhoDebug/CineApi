@@ -3,6 +3,7 @@ package org.example.cineapi.service;
 import org.example.cineapi.dto.FilmeRequestDTO;
 import org.example.cineapi.dto.FilmeResponseDTO;
 import org.example.cineapi.exception.RecursoNaoEncontradoException;
+import org.example.cineapi.model.Avaliacao;
 import org.example.cineapi.model.Diretor;
 import org.example.cineapi.model.Filme;
 import org.example.cineapi.repository.DiretorRepository;
@@ -52,7 +53,7 @@ public class FilmeService {
         existente.setDiretor(diretor);
         existente.setAno(dto.ano());
         existente.setDuracao(dto.duracao());
-        existente.setNota(dto.nota());
+
 
         Filme atualizado = repository.save(existente);
         return toResponseDTO(atualizado);
@@ -66,7 +67,7 @@ public class FilmeService {
         filme.setDiretor(diretor);
         filme.setAno(dto.ano());
         filme.setDuracao(dto.duracao());
-        filme.setNota(dto.nota());
+
         return filme;
     }
 
@@ -76,7 +77,8 @@ public class FilmeService {
                 filme.getTitulo(),
                 filme.getDiretor().getIdDiretor(),
                 filme.getDiretor().getNome(),
-                filme.getNota());
+                calcularMediaAvaliacoes(filme)
+        );
     }
 
     public List<FilmeResponseDTO> listarFilmesPorDiretor(Long idDiretor){
@@ -85,5 +87,16 @@ public class FilmeService {
                 .stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    private Double calcularMediaAvaliacoes(Filme filme){
+        if (filme.getAvaliacoes() == null || filme.getAvaliacoes().isEmpty()){
+            return 0.0;
+        }
+
+        return filme.getAvaliacoes()
+                .stream()
+                .mapToInt(Avaliacao::getNota)
+                .average().orElse(0.0);
     }
 }
