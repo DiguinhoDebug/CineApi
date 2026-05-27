@@ -18,8 +18,17 @@ public class SecurityConfig {
                 //proteção usada em websites  -  impede que sites terceiros ou aplicativos externos enviem requisições em seu nome (usuário)
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers()
+                        .requestMatchers("/v3/api-docs", "/swagger-ui/**").permitAll() //libera acesso ao swagger e tudo que tiver ali dentro, sem precisar de login
+                        //obiviamente perigoso em situações reais
+                        .requestMatchers("/filmes").permitAll()
+                        .requestMatchers("/filmes/buscar").permitAll()
+                        .anyRequest().authenticated() // para qualquer outra request, precisa estar autenticado
                 )
+                //ativando autenticação
+                .httpBasic()
+                .and()
+                .build(); //chamando o httpBasic e fanzendo a build "pra fazer o bglh ali
+
     }
 
 }
